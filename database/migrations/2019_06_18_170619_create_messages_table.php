@@ -17,6 +17,7 @@ class CreateMessagesTable extends Migration
             $table->bigIncrements('id');
             $table->integer('user_id')->unsigned();
             $table->text('message')->nullable();
+            $table->integer('receiver_id')->nullable();
             $table->timestamps();
         });
     }

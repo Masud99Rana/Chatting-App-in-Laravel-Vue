@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -26,14 +27,17 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function test()
+
+    public function private()
     {
-        return view('test');
+        return view('private');
     }
+    
+    public function users()
+    {
+        return User::all();
+    }    
 
 
-    public function index2()
-    {
-        return view('home');
-    }
+
 }

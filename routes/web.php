@@ -33,9 +33,14 @@ return PDF::loadHTML('Hello World!')->stream('download.pdf');
 
 Auth::routes();
 
+//group chat
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/hello', 'HomeController@index2')->name('private');
-
 
 Route::get('messages', 'MessageController@fetchMessages');
 Route::post('messages', 'MessageController@sendMessage');
+
+// one to one chat
+Route::get('/users', 'HomeController@users')->name('users');
+Route::get('/private', 'HomeController@private')->name('private');
+Route::get('/private-messages/{user}', 'MessageController@privateMessages')->name('privateMessages');
+Route::post('/private-messages/{user}', 'MessageController@sendPrivateMessage')->name('privateMessages.store');
