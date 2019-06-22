@@ -64,6 +64,9 @@
 
 
             </v-list-tile>
+
+
+            <p v-if="typingFriend.name">{{typingFriend.name}} is typing</p>
         </v-list>
 
 
@@ -80,6 +83,7 @@
               v-model="message"
               label="Enter Message"
               single-line
+              @keydown="onTyping"
               @keyup.enter="sendMessage"
             ></v-text-field>
         </v-flex>
@@ -108,6 +112,8 @@
       return {
         message:null,
         activeFriend:null,
+        typingFriend:{},
+        typingClock:null,
         allMessages:[],
         users:[],
       }
@@ -126,6 +132,15 @@
       }
     },
     methods:{
+
+      onTyping(){
+        Echo.private('privatechatapp.'+this.activeFriend).whisper('typing',{
+
+                user: this.user
+
+              });
+              
+      },
       sendMessage(){
         //check if there message
         if(!this.message){
@@ -166,6 +181,7 @@
     created(){
               this.fetchUsers();
               Echo.private('privatechatapp.'+this.user.id)
+
               .listen('PrivateMessageSent',(e)=>{
 
                 if (this.activeFriend == e.message.user_id){
@@ -176,6 +192,21 @@
                   // this.activeFriend=e.message.user_id;
                   //this.allMessages.push(e.message)
                   setTimeout(this.scrollToEnd,100);
+              })
+
+              .listenForWhisper('typing', (e) => {
+
+                if(e.user.id == this.activeFriend){
+
+                  this.typingFriend = e.user;
+
+                  if(this.typingClock) clearTimeout();
+
+                  this.typingClock = setTimeout(()=>{                  
+                    this.typingFriend = {};                  
+                    },3000);
+                
+                }
               });
     }
     

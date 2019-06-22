@@ -25,9 +25,6 @@ Broadcast::channel('chatapp', function ($user) {
 Broadcast::channel('privatechatapp.{receiverid}', function ($user, $receiverid) {
     if(auth()->check()){
         return $user;
-
-
     }
-
     // return (auth()->check() && in_array($receiverid, $user->friends));
 });
