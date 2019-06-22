@@ -10,7 +10,7 @@
             @click="activeFriend=friend.id"
           >
             <v-list-tile-action>
-              <v-icon color="green">account_circle</v-icon>
+              <v-icon :color="(onlineFriends.find(onlineFriend => onlineFriend.id === friend.id))?'green' : 'red'">account_circle</v-icon>
             </v-list-tile-action>
 
             <v-list-tile-content>
@@ -112,6 +112,7 @@
       return {
         message:null,
         activeFriend:null,
+        onlineFriends:[],
         typingFriend:{},
         typingClock:null,
         allMessages:[],
@@ -180,6 +181,30 @@
   //   },
     created(){
               this.fetchUsers();
+
+              //check user online user 
+              //here users data come from channels.php 
+              Echo.join(`privateonlineuser`)
+                  .here((users) => {
+                      // console.log(users)
+
+                      //it will show all users who are online
+                      this.onlineFriends = users;
+
+                  })
+                  .joining((user) => {
+                      // console.log(user.name);
+                      // 
+                      this.onlineFriends.push(user);
+                  })
+                  .leaving((user) => {
+                      // console.log(user.name);
+                      // 
+                      this.onlineFriends.splice(this.onlineFriends.indexOf(user),1);
+                  });
+
+
+              //one to one messages
               Echo.private('privatechatapp.'+this.user.id)
 
               .listen('PrivateMessageSent',(e)=>{
@@ -205,7 +230,7 @@
                   this.typingClock = setTimeout(()=>{                  
                     this.typingFriend = {};                  
                     },3000);
-                
+
                 }
               });
     }

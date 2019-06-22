@@ -1984,6 +1984,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       message: null,
       activeFriend: null,
+      onlineFriends: [],
       typingFriend: {},
       typingClock: null,
       allMessages: [],
@@ -2060,7 +2061,23 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this5 = this;
 
-    this.fetchUsers();
+    this.fetchUsers(); //check user online user 
+    //here users data come from channels.php 
+
+    Echo.join("privateonlineuser").here(function (users) {
+      // console.log(users)
+      //it will show all users who are online
+      _this5.onlineFriends = users;
+    }).joining(function (user) {
+      // console.log(user.name);
+      // 
+      _this5.onlineFriends.push(user);
+    }).leaving(function (user) {
+      // console.log(user.name);
+      // 
+      _this5.onlineFriends.splice(_this5.onlineFriends.indexOf(user), 1);
+    }); //one to one messages
+
     Echo["private"]('privatechatapp.' + this.user.id).listen('PrivateMessageSent', function (e) {
       if (_this5.activeFriend == e.message.user_id) {
         _this5.allMessages.push(e.message);
@@ -48524,9 +48541,21 @@ var render = function() {
                   _c(
                     "v-list-tile-action",
                     [
-                      _c("v-icon", { attrs: { color: "green" } }, [
-                        _vm._v("account_circle")
-                      ])
+                      _c(
+                        "v-icon",
+                        {
+                          attrs: {
+                            color: _vm.onlineFriends.find(function(
+                              onlineFriend
+                            ) {
+                              return onlineFriend.id === friend.id
+                            })
+                              ? "green"
+                              : "red"
+                          }
+                        },
+                        [_vm._v("account_circle")]
+                      )
                     ],
                     1
                   ),
