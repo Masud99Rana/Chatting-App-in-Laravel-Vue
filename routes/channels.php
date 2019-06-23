@@ -33,5 +33,4 @@ Broadcast::channel('privateonlineuser', function ($user) {
     if(auth()->check()){
         return $user;
     }
-    // return (auth()->check() && in_array($receiverid, $user->friends));
 });

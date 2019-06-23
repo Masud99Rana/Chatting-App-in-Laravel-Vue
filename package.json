@@ -24,8 +24,10 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "emoji-mart-vue": "^2.6.6",
         "laravel-echo": "^1.5.4",
         "pusher-js": "^4.4.0",
+        "vue-upload-component": "^2.8.20",
         "vuetify": "^1.5.14"
     }
 }

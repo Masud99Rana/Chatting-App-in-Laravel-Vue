@@ -24,11 +24,32 @@ class MessageController extends Controller
     }
     public function sendMessage(Request $request)
     {
-        $message=auth()->user()->messages()->create(['message'=>$request->message]);
+        // $message=auth()->user()->messages()->create(['message'=>$request->message]);
+        // broadcast(new MessageSent(auth()->user(),$message->load('user')))->toOthers();
+        // return response(['status'=>'Message sent successfully','message'=>$message]);
+        // 
+         if(request()->has('file')){
 
-        broadcast(new MessageSent(auth()->user(),$message->load('user')))->toOthers(); 
-       
+            $file = $request->file('file');
+            $filename = time() . $file->getClientOriginalName();
+            $file->move('images', $filename);
+            
+
+            // $filename = request('file')->store('chat');
+            $message=Message::create([
+                'user_id' => request()->user()->id,
+                'image' => $filename,
+            ]);
+        }else{
+            $message = auth()->user()->messages()->create(['message' => $request->message]);
+
+        }
+
+
+        broadcast(new MessageSent(auth()->user(),$message->load('user')))->toOthers();
+        
         return response(['status'=>'Message sent successfully','message'=>$message]);
+
     }
 
 

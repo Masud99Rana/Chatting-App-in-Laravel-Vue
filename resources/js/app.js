@@ -26,6 +26,11 @@ import 'vuetify/dist/vuetify.min.css'
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
+
+const VueUploadComponent = require('vue-upload-component')
+Vue.component('file-upload', VueUploadComponent)
+
+
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 Vue.component('Chat', require('./components/Chat.vue').default);
