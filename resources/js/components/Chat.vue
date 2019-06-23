@@ -58,6 +58,17 @@
 
 
 
+
+          <v-flex class="ml-2 text-right" xs1>
+              <v-btn @click="toggleEmo" fab dark small color="pink">
+                  <v-icon>insert_emoticon </v-icon>
+              </v-btn>
+          </v-flex>
+
+
+
+
+
 <!-- For upload file -->
 
 <!-- f$refs.upload.active = true"    will automatically send photo -->
@@ -98,19 +109,33 @@
         </v-flex>
       </v-layout>
 
+  
+      <div class="floating-div">
+          <picker v-if="emoStatus" set="emojione" @select="onInput" title="Pick your emoji…" />
+
+      </div>
+
 
     </v-footer>
   </v-layout>
 </template>
 
 <script>
+
+import { Picker } from 'emoji-mart-vue'
+
   export default {
     props:['user'],
+    components: {
+
+      Picker
+    },
     
     data () {
       return {
         message:null,
         allMessages:[],
+        emoStatus: false,
         token:document.head.querySelector('meta[name="csrf-token"]').content,
       }
     },
@@ -122,6 +147,9 @@
         }
           axios.post('/messages', {message: this.message}).then(response => {
                     this.message=null;
+
+                    this.emoStatus=false;
+
                     this.allMessages.push(response.data.message)
                     setTimeout(this.scrollToEnd,100);
           });
@@ -133,6 +161,20 @@
         },
       scrollToEnd(){
         window.scrollTo(0,99999);
+      },
+
+      onInput(e){
+        if(!e){
+          return false;
+        }
+        if(!this.message){
+          this.message=e.native;
+        }else{
+          this.message=this.message + e.native;
+        }
+      },
+      toggleEmo(){
+            this.emoStatus= !this.emoStatus;
       }
     
     },
@@ -152,11 +194,19 @@
 </script>
 
 <style scoped>
+
+/*.floating-div{
+    position: absolute;
+}*/
+
+.floating-div[data-v-0d66c37a] {
+    position: absolute;
+    top: -682%;
+    left: 0;
+    margin-left: 67%;
+}
 .chat-card{
   margin-bottom:140px;
-}
-.floating-div{
-    position: fixed;
 }
 .chat-card img {
     max-width: 300px;
